@@ -8,51 +8,34 @@
 # S'il n'a pas tous les objets et qu'il se présente devant le garde, il meurt (la vie est cruelle pour les héros).
 # Le programme sera standalone, c'est-à-dire qu'il pourra être exécuté sur n'importe quel ordinateur.
 
+# from .Map import Map as ***
 
 
-class Map:
-    def __init__(self):
-        # width = 15
-        # height = 15
-        # level structure (walls, paths, enemies...)
-        # sprites
 
-        ### Don't forget to implement a refresh everytime an event occurs, maps stays in BG
-        ### Can't walk on walls, can't go out of the grid
-    def __hash__(self):
-        return hash(self.position)
-    ### Storing positions in a dictionary ?
-    pass
+#
+# class Graphics:
+#     pass
+#
+# def winning_conditions():
+#     if item_index == 3:
+#         print("Yay you win")
+#         exit game
+#     else:
+#         print("You die")
+#         exit game
+#     pass
 
-class Characters:
-    def __init__(self):
-        # sprites =
-        # pos =
-        # animation =
-    pass
+import pygame
 
-class Items:
-    def __init__(self):
-        # sprites =
-        # random pos
-        # item index
-    pass
+pygame.init()
 
-class Movements:
-    def __init__(self, x, y):
-        self.position = (x, y)
-        # user input
-        # def move_up(self):
-        # def move_down(self):
-        # def move_right(self):
-        # def move_left(self):
-    pass
+size = width, height = 320, 240
+speed = [2, 2]
+black = 0, 0, 0
 
-def winning_conditions():
-    if item_index == 3:
-        print("Yay you win")
-        exit game
-    else:
-        print("You die")
-        exit game
-    pass
+screen = pygame.display.set_mode(size)
+
+while 1:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT: sys.exit()
+
