@@ -11,10 +11,7 @@
 # from .Map import Map as ***
 
 
-
 #
-# class Graphics:
-#     pass
 #
 # def winning_conditions():
 #     if item_index == 3:
@@ -29,13 +26,13 @@ import pygame
 
 pygame.init()
 
-size = width, height = 320, 240
+size = width, height = 800, 800
 speed = [2, 2]
 black = 0, 0, 0
 
 screen = pygame.display.set_mode(size)
 
-while 1:
+while True:
     for event in pygame.event.get():
-        if event.type == pygame.QUIT: sys.exit()
-
+        if event.type == pygame.QUIT:
+            sys.exit()
