@@ -1,69 +1,58 @@
-import pygame
-
-pygame.init()
-
-size = width, height = 800, 800
-speed = [2, 2]
-black = 0, 0, 0
-
-screen = pygame.display.set_mode(size)
+SPRITE_HEIGHT = 30
+SPRITE_WIDTH = 30
 
 
 class Map:
-    wall_selection_images = pygame.image.load("floor-tiles-20x20.png").convert_alpha()
-    wall_image = wall_selection_images.subsurface((300, 20, 40, 40))
-    X = wall_image
-    self.rect(self.rect.x, self.rect.y)
-    self.image
-    ### subsurface((x_left_corner, y_left_corner, width, height))
 
-    ### Don't forget to implement a refresh everytime an event occurs, maps stays in BG
-    ### Can't walk on walls, can't go out of the grid
+    def __init__(self, configfile):
+        self.configfile = configfile
 
-    def __init__(self):
-        self.width = 15
-        self.height = 15
-        self.maze = [XXXXXXXXXXXXXXX,
-                     X....XXXXXXXXXX,
-                     XXX......XXXXXX,
-                     XXXXX...XXXXXXX,
-                     XXXXX....XXXXXX,
-                     XXXXXXXXXXXXXXX,
-                     XXXXXXXXXXXXXXX,
-                     XXXXXXXXXXXXXXX,
-                     XXXXXXXXXXXXXXX,
-                     XXXXXXXXXXXXXXX,
-                     XXXXXXXXXXXXXXX,
-                     XXXXXXXXXXXXXXX,
-                     XXXXXXXXXXXXXXX,
-                     XXXXXXXXXXXXXXX,
-                     XXXXXXXXXXXXXXX, ]
+        self.paths = set()
+        self.paths_sprite = set()
+
+        self.start = set()
+        self.start_sprite = set()
+
+        self.goal = set()
+        self.goal_sprite = set()
+
+        self.walls = set()
+        self.walls_sprite = set()
+
+        self.load_from_file()
+
+    def load_from_file(self):
+        with open(self.configfile) as file:
+            for x, line in enumerate(file):
+                for y, col in enumerate(line):
+                    if col == ".":
+                        self.paths.add((x, y))
+                        self.paths_sprite.add((x * SPRITE_HEIGHT, y * SPRITE_WIDTH))
+                    elif col == "S":
+                        self.start.add((x, y))
+                        self.start_sprite.add((x * SPRITE_HEIGHT, y * SPRITE_WIDTH))
+                        self.paths.add((x, y))
+                    elif col == "G":
+                        self.goal.add((x, y))
+                        self.paths.add((x, y))
+                    else:
+                        self.walls.add((x, y))
+                        pass
+
+    # @property
+    # def adapt_to_sprite(self):
+    #     sprites_coords = []
+    #     for item in list(self.paths):
+    #         sprites_coords.append(x * 30)
+    #         print(sprites_coords)
 
 
-class Positions:
-    def __init__(self, x, y):
-        self.pos = (x, y)
-    pass
-
-    def __hash__(self):
-        return hash(self.position)
-    pass
+    # y = tuple([z * 10 for z in img.size])
+    # tuple(10*x for x in img.size)
 
 
-maze = Map
-
-walls = set()
-path = set()
-
-for x in maze.width:
-    for y in maze.height:
-        # create tuple list for each X x, y
-        if X:
-            self.walls.add(pos(x, y))
-            blit(wall_image)
-
-        # create tuple list for each empty x, y
-        if empty:
-            self.path.ad(pos(x, y))
-
+map = Map("config.txt")
+print(map.paths)
+print(list(map.paths))
+print(map.adapt_to_sprite)
 

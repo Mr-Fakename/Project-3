@@ -11,3 +11,12 @@ class Items:
         for item collected:
             index += 1
     pass
+
+# def winning_conditions():
+#     if item_index == 3:
+#         print("Yay you win")
+#         exit game
+#     else:
+#         print("You die")
+#         exit game
+#     pass
