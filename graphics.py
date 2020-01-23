@@ -1,9 +1,7 @@
-import sys
 import pygame
-# from setup import *
-from map import *
-from movements import *
 from characters import *
+from map import *
+from items import *
 
 SPRITE_WIDTH = 20
 SPRITE_HEIGHT = 20
@@ -11,64 +9,69 @@ SPRITE_HEIGHT = 20
 pygame.init()
 pygame.display.init()
 
+# Sets up the display
 size = width, height = 300, 300
-# speed = [2, 2]
-# black = 0, 0, 0
-
 screen = pygame.display.set_mode((width, height))
+background = pygame.Surface(screen.get_size())
+background = background.convert()
 
-# background = pygame.Surface(screen.get_size())
-# background = background.convert()
-# background.fill((150, 150, 250))
-# screen.blit(background, (0, 0))
-# pygame.display.flip()
+# Loads images and corrects scaling issues
+sprites_sheet = pygame.image.load("Resources/floor-tiles-20x20.png").convert()
+wall_sprite = sprites_sheet.subsurface((320, 0, 20, 20))
+goal_sprite = sprites_sheet.subsurface((160, 20, 20, 20))
+hero_sprite = pygame.image.load("Resources/MacGyver.png").convert()
+hero_sprite = pygame.transform.scale(hero_sprite, (SPRITE_WIDTH, SPRITE_HEIGHT))
+item1_sprite = pygame.image.load("Resources/ether.png").convert()
+item1_sprite = pygame.transform.scale(item1_sprite, (SPRITE_WIDTH, SPRITE_HEIGHT))
+item2_sprite = pygame.image.load("Resources/seringue.png").convert()
+item2_sprite = pygame.transform.scale(item2_sprite, (SPRITE_WIDTH, SPRITE_HEIGHT))
+item3_sprite = pygame.image.load("Resources/tube_plastique.png").convert()
+item3_sprite = pygame.transform.scale(item3_sprite, (SPRITE_WIDTH, SPRITE_HEIGHT))
+enemy_sprite = pygame.image.load("Resources/Gardien.png").convert()
+enemy_sprite = pygame.transform.scale(enemy_sprite, (SPRITE_WIDTH, SPRITE_HEIGHT))
 
-wall_sprites = pygame.image.load("floor-tiles-20x20.png").convert()
-wall_sprite = wall_sprites.subsurface((320, 0, 20, 20))
-goal_sprite = wall_sprites.subsurface((160, 20, 20, 20))
-start_sprite = pygame.image.load("MacGyver.png").convert()
-start_sprite = pygame.transform.scale(start_sprite, (SPRITE_WIDTH, SPRITE_HEIGHT))
-
+# All classes instances that are required for this project
 map = Map("config.txt")
 player = Player(map)
+goal = Goal(map)
+enemy = Enemies(map)
+# List comprehension that creates all 3 items in the game
+items = [Item(map) for x in range(3)]
 
-# print(player.position)
-# player.valid_move("move_right")
-# print(player.position)
 
-for item in map.walls:
-    # print(item)
-    # print(type(item))
-    screen.blit(wall_sprite, (item[1] * SPRITE_WIDTH, item[0] * SPRITE_HEIGHT))
-    pygame.display.flip()
+def display_sprites():
+    """ This function applies the sprites on screen at their required positions
+    x and y are inversed here to cope with the pygame coordinates system
+    """
+    # x and y are replaced by the index of the self position as defined in classes __init__
+    background.blit(item1_sprite, (items[0].position[1] * SPRITE_WIDTH, items[0].position[0] * SPRITE_HEIGHT))
+    background.blit(item2_sprite, (items[1].position[1] * SPRITE_WIDTH, items[1].position[0] * SPRITE_HEIGHT))
+    background.blit(item3_sprite, (items[2].position[1] * SPRITE_WIDTH, items[2].position[0] * SPRITE_HEIGHT))
+    background.blit(hero_sprite, (player.position[1] * SPRITE_WIDTH, player.position[0] * SPRITE_HEIGHT))
+    background.blit(goal_sprite, (goal.position[1] * SPRITE_WIDTH, goal.position[0] * SPRITE_HEIGHT))
+    background.blit(enemy_sprite, (enemy.position[1] * SPRITE_WIDTH, enemy.position[0] * SPRITE_HEIGHT))
+    screen.blit(background, (0, 0))
 
-player_sprite = start_sprite
-screen.blit(player_sprite, (player.position[1] * SPRITE_WIDTH, player.position[0] * SPRITE_HEIGHT))
-pygame.display.flip()
-player.valid_move("move_down")
-screen.blit(player_sprite, (player.position[1] * SPRITE_WIDTH, player.position[0] * SPRITE_HEIGHT))
-# pygame.display.flip()
-pygame.display.update()
 
-player.valid_move("move_down")
-screen.blit(player_sprite, (player.position[1] * SPRITE_WIDTH, player.position[0] * SPRITE_HEIGHT))
-pygame.display.flip()
-# print(player.position)
-# print(player.y, player.x)
-# player.valid_move("move_down")
-# print(player.position)
-# print(player.y, player.x)
-while True:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
-
-        # if event.type == pygame.KEYDOWN:
-        #     if event.key == pygame.K_LEFT or event.key == ord('a'):
-        #         print('left')
-        #     if event.key == pygame.K_RIGHT or event.key == ord('d'):
-        #         print('right')
-        #     if event.key == pygame.K_UP or event.key == ord('w'):
-        #         print('jump')
-        # pygame.display.flip()
+def end_screen(screen, message):
+    """ The "end_screen" function draws three items on the screen
+    The first one, a red rectangle, gets outlined by the second one, a white line
+    A text is then printed on top, via the "message" argument
+    """
+    # The substracted values are here calculated in regards to the two possible messages in the game
+    pygame.font.init()
+    font = pygame.font.Font(None, 18)
+    # First item, rectangle. The color is obtained by its (r, g, b) value
+    pygame.draw.rect(screen, (255, 0, 0),
+                     ((screen.get_width() / 2) - 75,
+                      screen.get_height() / 2 - 20,
+                      150, 40), 0)
+    # Second item, white outline
+    pygame.draw.rect(screen, (255, 255, 255),
+                     ((screen.get_width() / 2) - 75,
+                      screen.get_height() / 2 - 20,
+                      150, 40), 1)
+    # Third item, text
+    screen.blit(font.render(message, 1, (255, 255, 255)),
+                (screen.get_width() / 2 - 28,
+                 screen.get_height() / 2 - 40 / 2 + 14))
